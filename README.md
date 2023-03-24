@@ -1,6 +1,6 @@
 # Delphi Big Numbers
 
-[Rudy Belthuis](http://rvelthuis.de) is the orignal author of this library. He unfortunately passed away a while back. In an effort to keep this valuable library alive we've done the following:
+[Rudy Velthuis](http://rvelthuis.de) is the orignal author of this library. He unfortunately passed away a while back. In an effort to keep this valuable library alive we've done the following:
 
 * Pulled changes from [all the other branches](https://github.com/TurboPack/DelphiBigNumbers/network) into this repository
 * Created [Wiki articles](https://github.com/TurboPack/DelphiBigNumbers/wiki) based on his original documentation (with some updates)
@@ -13,7 +13,7 @@
 
 ## BigInteger, BigDecimal and BigRational for Delphi
 
-These are implementations of the multi-precision `BigInteger`, `BigDecimal` and `BigRational` types, built from scratch by Rudy Belthuis and now maintained by [TurboPack](https://github.com/TurboPack).
+These are implementations of the multi-precision `BigInteger`, `BigDecimal` and `BigRational` types, built from scratch by Rudy Velthuis and now maintained by [TurboPack](https://github.com/TurboPack).
 
 ## BigInteger
 
