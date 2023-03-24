@@ -57,6 +57,8 @@ DelphiBigNumbers
    Visualizers                 --- Sources for IDE debug visualizer DLL and packages for BigInteger and BigDecimal   
 ```
 
+The [data generators](https://github.com/TurboPack/DelphiBigNumbers-DataGenerators/) are now in their own repository.
+
 ---
 
 ### Dependencies:
