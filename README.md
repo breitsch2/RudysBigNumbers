@@ -9,8 +9,7 @@
 
 ***Pull requests welcome.*** If you want to help maintain this library, please let us know.
 
----
-# BigInteger, BigDecimal and BigRational for Delphi
+### BigInteger, BigDecimal and BigRational for Delphi
 
 These are implementations of the multi-precision `BigInteger`, `BigDecimal` and `BigRational` types, built from scratch.
 
