@@ -48,28 +48,13 @@ and then you can do things like:
 ## Directory structure
 
 ```
-BigNumbers
-   DataGenerators
-      BigDecimals
-         BigDecimalTestDataGenerator /...       --- Test data generator in Java; 
-	                                            open with NetBeans 8
-      BigIntegers
-         BigIntegerTestGenerator /...           --- Test data generator in C#; open .sln file with 
-                                                    Visual Studio 2010 (Express) or newer
-	 Java/BigIntegerTestDataGenerator /...  --- Newer test data generator in Java; 
-	                                            open with NetBeans 8
-      BigRationals                                   
-         BigRationalTestDataGenerator /...      --- Test data generator in Java, using the Apache 
-                                                    Commons-Math library.
-                                                    Open with NetBeans 8. Might require installation 
-                                                    of the Apache libs.
-   Source                                       --- Sources for units and for bases.inc generator
+DelphiBigNumbers
+   Source                      --- Sources for units and for bases.inc
    Tests
-      BigDecimals /...                          --- Sources for DUnit tests for BigDecimals
-      BigIntegers /...                          --- Sources for DUnit tests for BigIntegers
-      BigRationals /...                         --- Sources for DUnit tests for BigRationals
-   Visualizers                                  --- Sources for IDE debug visualizer DLL and packages for BigInteger 
-                                                    and BigDecimal   
+      BigDecimals /...         --- Sources for DUnit tests for BigDecimals
+      BigIntegers /...         --- Sources for DUnit tests for BigIntegers
+      BigRationals /...        --- Sources for DUnit tests for BigRationals
+   Visualizers                 --- Sources for IDE debug visualizer DLL and packages for BigInteger and BigDecimal   
 ```
 
 ---
