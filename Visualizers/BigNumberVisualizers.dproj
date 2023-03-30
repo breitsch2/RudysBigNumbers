@@ -94,6 +94,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Velthuis.BigIntegers.Visualizers.pas"/>
+        <None Include="LibSuffixes.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

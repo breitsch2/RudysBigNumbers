@@ -73,10 +73,8 @@
         <VerInfo_Keys>CompanyName=TurboPack;FileDescription=Rudy Velthuis&apos; Delphi Big Numbers library;FileVersion=1.0.0.0;InternalName=;LegalCopyright=BSD-2-Clause license ;LegalTrademarks=;OriginalFilename=;ProductName=DelphiBigNumbers;ProductVersion=1.0.0.0;Comments=https://github.com/TurboPack/DelphiBigNumbers;CFBundleName=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
-    <Import Project="project settings.optset" Condition="'$(Base_Win32)'!='' And Exists('project settings.optset')"/>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <SanitizedProjectName>BigNumbers</SanitizedProjectName>
-        <CfgDependentOn>project settings.optset</CfgDependentOn>
         <DCC_Description>Rudy Velthuis&apos; Delphi Big Numbers library</DCC_Description>
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <DCC_UsePackage>rtl;$(DCC_UsePackage)</DCC_UsePackage>
@@ -138,6 +136,7 @@
         <DCCReference Include="..\Source\Velthuis.Sizes.pas"/>
         <DCCReference Include="..\Source\Velthuis.XorShifts.pas"/>
         <DCCReference Include="..\Source\CompilerAndRTLVersions.pas"/>
+        <None Include="LibSuffixes.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
             <DependentOn>..\..\..\Embarcadero\Studio\default_all_BPL.optset</DependentOn>
