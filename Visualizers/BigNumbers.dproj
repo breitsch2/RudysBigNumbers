@@ -78,11 +78,13 @@
         <DCC_Description>Rudy Velthuis&apos; Delphi Big Numbers library</DCC_Description>
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <DCC_UsePackage>rtl;$(DCC_UsePackage)</DCC_UsePackage>
+        <DllSuffix>$(Auto)</DllSuffix>
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <BT_BuildType>Debug</BT_BuildType>
+        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <Import Project="..\..\..\Embarcadero\Studio\default_release_BPL.optset" Condition="'$(Cfg_1)'!='' And Exists('..\..\..\Embarcadero\Studio\default_release_BPL.optset')"/>
@@ -91,6 +93,7 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <DllSuffix>$(Auto)</DllSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <SanitizedProjectName>BigNumbers</SanitizedProjectName>
@@ -100,6 +103,7 @@
         <GenPackage>true</GenPackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -109,14 +113,15 @@
         <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Optimize>false</DCC_Optimize>
         <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Debug>true</VerInfo_Debug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <DCC_Description>Velthuis BigInteger and BigDecimal for Delphi</DCC_Description>
-        <DllSuffix>260</DllSuffix>
+        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=TurboPack;FileDescription=Rudy Velthuis&apos; Delphi Big Numbers library;FileVersion=1.0.0.0;InternalName=;LegalCopyright=BSD-2-Clause license ;LegalTrademarks=;OriginalFilename=;ProductName=DelphiBigNumbers;ProductVersion=1.0.0.0;Comments=https://github.com/TurboPack/DelphiBigNumbers;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <ItemGroup>

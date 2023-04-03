@@ -25,8 +25,8 @@ package BigNumbers;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Velthuis BigInteger and BigDecimal for Delphi'}
-{$LIBSUFFIX '260'}
+{$DESCRIPTION 'Rudy Velthuis'' Delphi Big Numbers library'}
+{$LIBSUFFIX AUTO}
 {$IMPLICITBUILD ON}
 
 requires

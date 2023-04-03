@@ -35,6 +35,10 @@ requires
   designide,
   BigNumbers;
 
+{$IFNDEF DEBUG}
+You must compile with the DEBUG build configuration.
+{$IFEND}
+
 contains
   Velthuis.BigIntegers.Visualizers in 'Velthuis.BigIntegers.Visualizers.pas';
 

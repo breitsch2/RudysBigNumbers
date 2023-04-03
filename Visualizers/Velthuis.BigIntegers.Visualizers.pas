@@ -50,11 +50,6 @@
 { code was removed.                                                         }
 {===========================================================================}
 
-{$IFNDEF DEBUG}
-You must compile with the DEBUG build configuration.
-{$IFEND}
-
-
 unit Velthuis.BigIntegers.Visualizers;
 
 interface
