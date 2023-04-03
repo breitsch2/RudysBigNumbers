@@ -86,3 +86,6 @@ Tests/BigIntegers/IMag.TestBigIntegers.pas
 *.a
 *.dcp
 *.res
+*.bpi
+AndroidManifest.template.xml
+dcu/**

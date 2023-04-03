@@ -137,7 +137,7 @@ type
 implementation
 
 uses
-  System.Math, Winapi.Windows;
+  System.Math, {$IFDEF MSWINDOWS} Winapi.Windows, {$ENDIF} System.Classes;
 
 {$RANGECHECKS OFF}
 {$OVERFLOWCHECKS OFF}
@@ -155,13 +155,14 @@ end;
 { TXorShift32 }
 
 constructor TXorShift32.Create;
-var
-  C: Int64;
 begin
+{$IFDEF MSWINDOWS}
+  var C: Int64;
   if QueryPerformanceCounter(C) then
     FSeed := UInt32(C)
   else
-    FSeed := GetTickCount;
+{$ENDIF}
+    FSeed := TThread.GetTickCount;
 end;
 
 function TXorShift32.GetSeed: Int64;
@@ -185,13 +186,14 @@ end;
 { TXorShift64 }
 
 constructor TXorShift64.Create;
-var
-  C: Int64;
 begin
+{$IFDEF MSWINDOWS}
+  var C: Int64;
   if QueryPerformanceCounter(C) then
-    FSeed := C
+    FSeed := UInt32(C)
   else
-    FSeed := 88172645463325252 + GetTickCount;
+{$ENDIF}
+    FSeed := 88172645463325252 + TThread.GetTickCount;
 end;
 
 function TXorShift64.GetSeed: Int64;

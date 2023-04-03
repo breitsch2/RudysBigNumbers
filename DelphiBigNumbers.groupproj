@@ -3,7 +3,7 @@
         <ProjectGuid>{56E34B7D-69CF-4D0F-B5F2-CA08264A1AB2}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Visualizers\BigNumbers.dproj">
+        <Projects Include="BigNumbers.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Visualizers\BigNumVisualizers.dproj">
@@ -24,13 +24,13 @@
         </BorlandProject>
     </ProjectExtensions>
     <Target Name="BigNumbers">
-        <MSBuild Projects="Visualizers\BigNumbers.dproj"/>
+        <MSBuild Projects="BigNumbers.dproj"/>
     </Target>
     <Target Name="BigNumbers:Clean">
-        <MSBuild Projects="Visualizers\BigNumbers.dproj" Targets="Clean"/>
+        <MSBuild Projects="BigNumbers.dproj" Targets="Clean"/>
     </Target>
     <Target Name="BigNumbers:Make">
-        <MSBuild Projects="Visualizers\BigNumbers.dproj" Targets="Make"/>
+        <MSBuild Projects="BigNumbers.dproj" Targets="Make"/>
     </Target>
     <Target Name="BigNumVisualizers">
         <MSBuild Projects="Visualizers\BigNumVisualizers.dproj"/>
