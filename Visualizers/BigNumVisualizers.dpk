@@ -26,7 +26,7 @@ package BigNumVisualizers;
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Debug Visualizers for BigInteger and BigDecimal types'}
-{$LIBSUFFIX '280'}
+{$LIBSUFFIX AUTO}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
@@ -34,10 +34,6 @@ requires
   rtl,
   designide,
   BigNumbers;
-
-{$IFNDEF DEBUG}
-You must compile with the DEBUG build configuration.
-{$IFEND}
 
 contains
   Velthuis.BigIntegers.Visualizers in 'Velthuis.BigIntegers.Visualizers.pas';

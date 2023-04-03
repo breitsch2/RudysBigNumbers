@@ -57,15 +57,13 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
-    <Import Project="..\..\..\Embarcadero\Studio\default_all_BPL.optset" Condition="'$(Base)'!='' And Exists('..\..\..\Embarcadero\Studio\default_all_BPL.optset')"/>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>BigNumbers</SanitizedProjectName>
-        <CfgDependentOn>..\..\..\Embarcadero\Studio\default_all_BPL.optset</CfgDependentOn>
         <DCC_DcuOutput>..\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_Description>Rudy Velthuis&apos; Delphi Big Numbers library</DCC_Description>
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <DCC_UnitSearchPath>..\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DllSuffix>280</DllSuffix>
+        <DllSuffix>$(Auto)</DllSuffix>
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
         <VerInfo_AutoGenVersion>true</VerInfo_AutoGenVersion>
@@ -87,9 +85,7 @@
         <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
-    <Import Project="..\..\..\Embarcadero\Studio\default_release_BPL.optset" Condition="'$(Cfg_1)'!='' And Exists('..\..\..\Embarcadero\Studio\default_release_BPL.optset')"/>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <CfgDependentOn>..\..\..\Embarcadero\Studio\default_release_BPL.optset</CfgDependentOn>
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
@@ -117,13 +113,14 @@
         <VerInfo_Debug>true</VerInfo_Debug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=TurboPack;FileDescription=Rudy Velthuis&apos; Delphi Big Numbers library;FileVersion=1.0.0.0;InternalName=;LegalCopyright=BSD-2-Clause license ;LegalTrademarks=;OriginalFilename=;ProductName=DelphiBigNumbers;ProductVersion=1.0.0.0;Comments=https://github.com/TurboPack/DelphiBigNumbers;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <DllSuffix>$(Auto)</DllSuffix>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
+    <Import Project="..\..\..\Embarcadero\Studio\default_all_BPL.optset" Condition="'$(Base)'!='' And Exists('..\..\..\Embarcadero\Studio\default_all_BPL.optset')"/>
+    <Import Project="..\..\..\Embarcadero\Studio\default_release_BPL.optset" Condition="'$(Cfg_1)'!='' And Exists('..\..\..\Embarcadero\Studio\default_release_BPL.optset')"/>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -144,12 +141,10 @@
         <None Include="LibSuffixes.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
-            <DependentOn>..\..\..\Embarcadero\Studio\default_all_BPL.optset</DependentOn>
         </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>
-            <DependentOn>..\..\..\Embarcadero\Studio\default_release_BPL.optset</DependentOn>
         </BuildConfiguration>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
@@ -164,18 +159,23 @@
                 <Source>
                     <Source Name="MainSource">BigNumbers.dpk</Source>
                 </Source>
-                <Excluded_Packages/>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder-Package für Office 2000-Server</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder-Package für Office XP-Server</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
                 <Platform value="Android">False</Platform>
                 <Platform value="Android64">False</Platform>
+                <Platform value="iOSDevice64">False</Platform>
+                <Platform value="iOSSimARM64">False</Platform>
                 <Platform value="Linux64">False</Platform>
                 <Platform value="OSX64">False</Platform>
                 <Platform value="OSXARM64">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">True</Platform>
-                <Platform value="iOSDevice64">False</Platform>
-                <Platform value="iOSSimARM64">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
