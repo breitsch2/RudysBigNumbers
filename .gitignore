@@ -89,3 +89,4 @@ Tests/BigIntegers/IMag.TestBigIntegers.pas
 *.bpi
 AndroidManifest.template.xml
 dcu/**
+bin/**
