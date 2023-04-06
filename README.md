@@ -1,4 +1,4 @@
-# Delphi Big Numbers
+# Rudy's Big Numbers <img src="https://user-images.githubusercontent.com/821930/230476405-ebf33117-139a-4895-8d00-70e30186e3fa.jpg" align="Right" alt="Logo for Rudy's Big Numbers Library">
 
 [Rudy Velthuis](http://rvelthuis.de) is the orignal author of this library. He unfortunately passed away a while back. In an effort to keep this valuable library alive we've done the following:
 
@@ -11,7 +11,7 @@
 
 ----
 
-## BigInteger, BigDecimal and BigRational for Delphi
+## BigInteger, BigDecimal and BigRational for Delphi and C++Builder
 
 These are implementations of the multi-precision `BigInteger`, `BigDecimal` and `BigRational` types, built from scratch by Rudy Velthuis and now maintained by [TurboPack](https://github.com/TurboPack).
 
@@ -54,13 +54,8 @@ DelphiBigNumbers
       BigDecimals /...         --- Sources for DUnit tests for BigDecimals
       BigIntegers /...         --- Sources for DUnit tests for BigIntegers
       BigRationals /...        --- Sources for DUnit tests for BigRationals
-   Visualizers                 --- Sources for IDE debug visualizer DLL and packages for BigInteger and BigDecimal   
+   Visualizers                 --- Sources for IDE debug visualizer DLL and packages for BigInteger and BigDecimal  
+   Samples                     --- A Few samples of Big Math including Pi and Euler's number
 ```
 
 The [data generators](https://github.com/TurboPack/DelphiBigNumbers-DataGenerators/) are now in their own repository.
-
----
-
-### Dependencies:
-
-* Uses [Delphi Project Magician](https://www.uweraabe.de/Blog/downloads/download-info/project-magician/) by Uwe Raabe for library prefixes.
