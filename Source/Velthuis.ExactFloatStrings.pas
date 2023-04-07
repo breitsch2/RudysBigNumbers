@@ -11,7 +11,7 @@
 {                                                                           }
 { License:    BSD 2-Clause License - See LICENSE.md                         }
 {                                                                           }
-{ Latest:     https://github.com/TurboPack/DelphiBigNumbers/                }
+{ Latest:     https://github.com/TurboPack/RudysBigNumbers/                 }
 {---------------------------------------------------------------------------}
 
 unit Velthuis.ExactFloatStrings;

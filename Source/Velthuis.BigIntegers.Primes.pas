@@ -6,11 +6,11 @@
 { Author:     Rudy Velthuis                                                         }
 { Copyright:  (c) 2017 Rudy Velthuis                                                }
 { Notes:      See https://github.com/TurboPack/DelphiBigNumbers/wiki/BigIntegers    }
-{             See https://github.com/TurboPack/DelphiBigNumbers/                    }
+{             See https://github.com/TurboPack/RudysBigNumbers/                     }
 {                                                                                   }
 { License:    BSD 2-Clause License - See LICENSE.md                                 }
 {                                                                                   }
-{ Latest:     https://github.com/TurboPack/DelphiBigNumbers/                        }
+{ Latest:     https://github.com/TurboPack/RudysBigNumbers/                         }
 {-----------------------------------------------------------------------------------}
 
 unit Velthuis.BigIntegers.Primes;

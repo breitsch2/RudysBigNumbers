@@ -1,4 +1,10 @@
-﻿program BigMathConstants;
+﻿{===============================================
+
+ Included with Rudy's Big Numbers Library
+ https://github.com/TurboPack/RudysBigNumbers/
+
+================================================}
+program BigMathConstants;
 
 {$APPTYPE CONSOLE}
 
