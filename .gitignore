@@ -90,3 +90,4 @@ Tests/BigIntegers/IMag.TestBigIntegers.pas
 AndroidManifest.template.xml
 dcu/**
 bin/**
+*.zip
