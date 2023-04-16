@@ -1,0 +1,475 @@
+program CAI_NEURAL_Crypto_RSA_BIGPI_Tester; 
+ 
+//https://blogs.embarcadero.com/getting-big-with-pi-in-delphi/
+//https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/TestData/pi-hashes.txt
+//https://delphidigital.io/   
+//https://phi.exchange/   
+//https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/BigPi.pas
+
+ Const CSHARE = 'https://ipsobildung.sharepoint.com/:u:/s/INFEFZ.1.12345ARJ2208DAST.TB1A/EeMicZKwQwFNlP6GEES4rSwBY5N3ntpw8anAMwPmLefNOg?e=vs9T6c';
+ 
+type TTDigits = Array of Byte; 
+    
+var A : TVectorClass;
+    B : TVectorClass;
+    st: string; f1,f2: Float;               
+    p, q, phi: int64;
+    e, n, privkey, encrypt, decrypt: integer;   
+    abigpi: string;  
+    
+    
+    
+ function DigitsToString(digits: TTDigits): String;
+   begin
+     SetLength(Result, Length(Digits));
+     //itoa(Digits[it]);
+     //writeln(result[2]);
+     for it := 0 to pred(Length(Digits)) do begin
+       Result:= result[it+1]+inttostr(Digits[it]);
+     end;
+     //Result := Result.Insert(1,'.');
+   end; 
+   
+ function Chudnovsky(Places: Integer): string;
+ var lastsum, t, sum: TBigfloat;
+     n, d: TInteger;
+     ana, ada: UInt64;  resstr: string;
+   begin
+     // Use +6 internally for calculations
+     //var internalPrecision := MaxInt;
+     //if Places <= MaxInt - 6 then
+       //internalPrecision := Places + 6;
+      places:= places+2
+     //var lastSum: BigDecimal;
+     t:= TBigFloat.Create1(places);
+     sum := TBigFloat.Create1(places);
+     sum.SetSigDigits(places);
+     t.add1(3);
+     sum.add1(3);
+     //sum.DefaultPrecision := internalPrecision;
+     //sum.DefaultRoundingMode := rmFloor;
+     {var} n:= TInteger.create(1);
+      //n.assignone;
+      d := TInteger.create(0);
+      //d.assignzero;
+     ana:= 0;
+     ada:= 24;
+     //while sum <> lastSum do begin
+     lastsum := TBigFloat.Create1(places);
+     while sum.tostring(normal) <> lastSum.tostring(normal) do begin
+      //writeln('debug1 unequal'+sum.tostring(normal));
+      //writeln('debug2 unequal'+lastsum.tostring(normal));
+       lastSum.assign(sum);
+       //n := n + na;
+       n.add1(ana);
+       ana:= ana + 8;
+       //d := d + da;
+        d.add1(ada);
+       ada:= ada + 32;
+       //t := ((t * n)/d);
+       t.mult2(n);
+       t.divide1(d,places)
+       //sum := (sum + t).RoundToPrecision(internalPrecision);
+       sum.add(t);
+       sum.RoundToPrec1;
+       //sum.RoundToPrec(Places);
+     end;
+     //Result := sum.RoundToPrecision(Places);
+     sum.RoundToPrec(places);  
+     resstr:= sum.tostring(normal)               
+     SetLength(resstr, Length(resstr) - 2);
+     result:= resstr;
+     t.free; n.free; d.free; lastsum.free;
+ end; 
+ 
+ type TBigint = Tinteger; 
+ 
+ function BigEuler(const Digits: Integer): TBigFloat; 
+ //BigDecimal;
+ var lastResult, bigdecone: TBigFloat;  lastFactorial: TBigint;
+     InternalPrecision: integer;
+     iteration: Uint64;  tmp: string;
+ begin
+  
+  {var} InternalPrecision:= maxINT;
+  if Digits <= MaxInt - 2 then
+    InternalPrecision:= Digits + 2;
+  result:= TBigFloat.Create1(internalprecision);
+  result.assignone;              
+
+  //Result.DefaultPrecision :=InternalPrecision;
+  {var} lastFactorial := TBigint.create(1);
+  lastResult:= TBigFloat.Create1(digits);
+  lastresult.assignzero;
+  bigdecone:= TBigFloat.Create1(digits);
+  bigdecone.assignone;
+  iteration:= 1;
+  while true do begin
+    lastResult.assign(Result);
+    //lastFactorial := lastFactorial * iteration;
+    lastFactorial.mult1(iteration);
+    //Result := (Result + BigDecimal.One / lastFactorial).RoundToPrecision(InternalPrecision);
+    //result.divide1(lastfactorial, digits);
+    //Result.add(bigone);
+    bigdecone.divide1(lastfactorial, digits)
+    //writeln(bigdecone.tostring(normal));  
+    //result.divide1(lastfactorial, digits) 
+    Result.add(bigdecone);
+    //Result.divide(bigdecone, digits);
+    //result.assign(result)
+    //Result.RoundToPrec(internalprecision);
+    Result.RoundToPrec1;
+    //result.divide1(lastfactorial, digits);
+    //if lastResult = Result then break;
+    if lastResult.tostring(normal) = Result.tostring(normal) then break;
+    //if iteration = 30 then break;
+    //inc64(Iteration);
+    Iteration:= iteration+1;
+    //writeln(itoa(iteration));
+    Writeln(Format('%d digits took %d iterations',[Digits, iteration]));
+  end;
+  //Writeln(Format('%d digits took %d iterations',[Digits, iteration]));
+  //Result.DefaultRoundingMode := rmFloor;
+  //Result := Result.RoundToPrecision(Digits);
+  Result.RoundToPrec(Digits);
+  //Result.assign(result); //.RoundToPrec(Digits);
+  //Result.RoundToPrec1;
+  //result:= result;
+  lastResult.free; bigdecone.free; lastFactorial.free;
+end;            
+
+
+ begin //@main
+ 
+  A:= TVectorClass.Create([]);
+  B:= TVectorClass.Create([]);
+      TestVectorClassExtended;     
+  A.Free;
+  B.Free;
+  
+  println('{CRYPTO System _________________________}');
+  //1. Select prime numbers p = 17, q = 11
+  p:= 5; q:= 17;
+  
+  //2. Calculate n = pq = 17 x 11 = 187
+  n:= p*q;
+  println('public key: '+itoa(n));               
+                                              
+  //3. Calculate f(n) = (p-1)(q-1) = 16 x 10 = 160
+  phi:= (p-1)*(q-1);
+  println('phi: Þ '+itoa(phi));
+  
+  //4. Select e=7 (public exponent), less than & relative prime to f(n) = 160
+  e:= 3;
+  
+  //5. Determine private key d such that de = 1 mod 160 and d < 160
+  //Func ExpMod(A, Z: Integer; const N: Integer): Integer;');
+  for it:= 1 to 100 do 
+      if (it * e mod phi) = 1 then privkey:= it;
+  println('private key: '+itoa(privkey));
+  
+  //6. Test the private key:  
+  for it:= 1 to 100 do 
+      if ExpMod(it,e, phi) = 1 then println('proof privkey '+itoa(it));
+      
+  //7. Encrypt number 88 with public key: 
+  encrypt:= ExpMod(2, e, n); 
+  writeln('origin numsign: '+'2');
+  writeln('sign to encrypt: '+itoa(encrypt));
+  
+  //8. Decrypt number with private key: 
+  //writeln(bigpow(encrypt, 23));
+  decrypt:= ExpMod(encrypt, privkey, n);
+  writeln('sign to decrypt: '+itoa(decrypt));
+  
+  //9. BigNumber functions
+  //Func RSAEncrypt(aval, apow, amod:Str):Str;;
+  //Func RSADecrypt(aval, apow, amod:Str):Str;; 
+  writeln('big int functions__________________:')
+  writeln(RSAEncrypt('88', itoa(e), itoa(n))); 
+  writeln(RSADecrypt(RSAEncrypt('88',itoa(e),itoa(n)), itoa(privkey),itoa(n))); 
+                               
+  TestKMeans2;
+  //TestTNNetVolume;
+  //LoadPictureIntoVolume
+  
+  writeln(floattostr(SoftmaxDerivative( 0.087879))); 
+  writeln(getparentprocessname2)
+  //Register_PYthonGUI;
+  
+  //InverseCompareResult
+     st := 'a number 12.35 and another 13.415';
+     writeln('Total String parts = '+IntToStr(NumStringParts(st,#32)));
+     f1 := StrToFloatDef(GetStringPart(st,#32,3),0.0);
+     f2 := StrToFloatDef(GetStringPart(st,#32,6),0.0);
+     writeln('Float 1 = '+FloatToStr(F1)+' and Float 2 = '+FloatToStr(F2)); 
+     TestVectorClassExtended;      
+     
+    writeln(itoa(neuralGetProcessId( )));
+    writeln(itoa(GetProcessId( )));
+   //CreatesimpleCNN ;
+  
+   { TrainingPairs := CreateHypotenusePairList(10000);
+    ValidationPairs := CreateHypotenusePairList(1000);
+    TestPairs := CreateHypotenusePairList(1000);   }
+    //procedure TestBackProp();
+    //TestBackProp();
+    //TTestCNNAlgoDoRunHypo;
+    
+    //writeln(botostr(wGetX2(CShare,Exepath+'CRYPTFILE3'+'.pdf'))); 
+    abigpi:= getbigpi;
+    writeln('md5 hash pi1000: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi900: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi800: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi700: '+SHA1toHex(synmd5(abigpi)));
+    
+    writeln('maxINT: '+itoa(maxINT));
+    //  is a diff in the last dec. - we work on it
+    writeln(Chudnovsky(1000));
+    //writeln('md5 hash pi100: '+SHA1toHex(synmd5(Chudnovsky(1000))));
+    abigpi:= getbigpi;
+    SetLength(abigpi, Length(abigpi) - 0);
+    writeln('md5 hash pi1000: '+SHA1toHex(synmd5(abigpi)));
+    writeln(abigpi);
+    
+    //BigEuler(const Digits: Integer): TBigFloat; 
+    //writeln(BigEuler(30).tostring(scientific)); 
+     writeln(BigEuler(30).tostring(normal)); 
+     
+    // Writeln('Þ, Phi, Golden ratio, (1 + v5)/2:');
+  
+End.
+
+ref: https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/TestData/pi-hashes.txt
+
+Doc: What do mathematicians think of Von Neumann?
+
+Jacob Bronowski once told an anecdote about von Neumann.
+
+They had disagreed about some problem and Bronowski realised overnight that von Neumann was right. In the morning, Bronowski telephoned von Neumann to tell him this. Von Neumann apparently replied "You woke me up to tell me that I was right? Please wait until I am wrong."
+Bertrand Russell said that von Neumann would often have the solution to a problem before Russell had even understood the question. (Edit: Russell may not have been referring to von Neumann. Did they know each other?)
+
+Here's something few people realize:
+Politicians don't follow money.  Money follows politicians.
+If you don't think this is true, ask yourself why the Pro-gun Lobby gives zero money to Nancy Pelosi. Or why the Abortion Lobby give zero money to Ted Cruz.
+
+
+Ref:  Starting Validation.
+VALIDATION RECORD! Saving NN at DenseNetBCL40_2.nn
+Debug SavetokenStructureToString: 
+Debug structuretostring: -1)TNNetInput:32;32;3;0;0;0;0;0#0)TNNetConvolutionLinear:4;3;1;1;1;0;0;0#1)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#2)TNNetChannelMul:0;0;0;0;0;0;0;0#3)TNNetChannelBias:0;0;0;0;0;0;0;0#4)TNNetSELU:0;0;0;0;0;0;0;0#5)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#6)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#7)TNNetChannelMul:0;0;0;0;0;0;0;0#8)TNNetChannelBias:0;0;0;0;0;0;0;0#9)TNNetSELU:0;0;0;0;0;0;0;0#10)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#11)TNNetDropout:5;1;0;0;0;0;0;0#12)TNNetDeepConcat:0;0;0;0;0;0;0;0:1;12#13)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#14)TNNetChannelMul:0;0;0;0;0;0;0;0#15)TNNetChannelBias:0;0;0;0;0;0;0;0#16)TNNetSELU:0;0;0;0;0;0;0;0#17)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#18)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#19)TNNetChannelMul:0;0;0;0;0;0;0;0#20)TNNetChannelBias:0;0;0;0;0;0;0;0#21)TNNetSELU:0;0;0;0;0;0;0;0#22)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#23)TNNetDropout:5;1;0;0;0;0;0;0#24)TNNetDeepConcat:0;0;0;0;0;0;0;0:13;24#25)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#26)TNNetChannelMul:0;0;0;0;0;0;0;0#27)TNNetChannelBias:0;0;0;0;0;0;0;0#28)TNNetSELU:0;0;0;0;0;0;0;0#29)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#30)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#31)TNNetChannelMul:0;0;0;0;0;0;0;0#32)TNNetChannelBias:0;0;0;0;0;0;0;0#33)TNNetSELU:0;0;0;0;0;0;0;0#34)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#35)TNNetDropout:5;1;0;0;0;0;0;0#36)TNNetDeepConcat:0;0;0;0;0;0;0;0:25;36#37)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#38)TNNetChannelMul:0;0;0;0;0;0;0;0#39)TNNetChannelBias:0;0;0;0;0;0;0;0#40)TNNetSELU:0;0;0;0;0;0;0;0#41)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#42)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#43)TNNetChannelMul:0;0;0;0;0;0;0;0#44)TNNetChannelBias:0;0;0;0;0;0;0;0#45)TNNetSELU:0;0;0;0;0;0;0;0#46)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#47)TNNetDropout:5;1;0;0;0;0;0;0#48)TNNetDeepConcat:0;0;0;0;0;0;0;0:37;48#49)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#50)TNNetChannelMul:0;0;0;0;0;0;0;0#51)TNNetChannelBias:0;0;0;0;0;0;0;0#52)TNNetSELU:0;0;0;0;0;0;0;0#53)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#54)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#55)TNNetChannelMul:0;0;0;0;0;0;0;0#56)TNNetChannelBias:0;0;0;0;0;0;0;0#57)TNNetSELU:0;0;0;0;0;0;0;0#58)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#59)TNNetDropout:5;1;0;0;0;0;0;0#60)TNNetDeepConcat:0;0;0;0;0;0;0;0:49;60#61)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#62)TNNetChannelMul:0;0;0;0;0;0;0;0#63)TNNetChannelBias:0;0;0;0;0;0;0;0#64)TNNetSELU:0;0;0;0;0;0;0;0#65)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#66)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#67)TNNetChannelMul:0;0;0;0;0;0;0;0#68)TNNetChannelBias:0;0;0;0;0;0;0;0#69)TNNetSELU:0;0;0;0;0;0;0;0#70)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#71)TNNetDropout:5;1;0;0;0;0;0;0#72)TNNetDeepConcat:0;0;0;0;0;0;0;0:61;72#73)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#74)TNNetChannelMul:0;0;0;0;0;0;0;0#75)TNNetChannelBias:0;0;0;0;0;0;0;0#76)TNNetSELU:0;0;0;0;0;0;0;0#77)TNNetPointwiseConvLinear:38;1;0;1;1;0;0;0#78)TNNetMaxPool:2;2;0;0;0;0;0;0#79)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#80)TNNetChannelMul:0;0;0;0;0;0;0;0#81)TNNetChannelBias:0;0;0;0;0;0;0;0#82)TNNetSELU:0;0;0;0;0;0;0;0#83)TNNetMaxChannel:2;2;0;0;0;0;0;0#84)TNNetFullConnectLinear:10;1;1;0;0;0;0;0#85)TNNetSoftMax:0;0;0;0;0;0;0;0
+Epochs: 10 Examples seen:400000 Validation Accuracy: 0.4925 Validation Error: 1.3194 Validation Loss: 1.4684 Total time: 1082.28min
+Image mX4 FThreadNN[0].DebugWeights(); skipped...
+Starting Testing.
+Epochs: 10 Examples seen:400000 Test Accuracy: 0.5010 Test Error: 1.3102 Test Loss: 1.4532 Total time: 1097.69min
+Epoch time: 28.0000 minutes. 10 epochs: 4.7000 hours.
+Epochs: 10. Working time: 18.29 hours.
+CAI maXbox Neural Fit Finished.
+ mX4 executed: 26/12/2021 14:36:36  Runtime: 5:42:1.831  Memload: 34% use
+
+Liebe Kundinnen und Kunden,
+ 
+dieses Jahr neigt sich dem Ende zu und ich finde dieses zweite Corona-Jahr war alles in allem anstrengend.
+Es gibt und gab so viele Diskussionen um streitbare Themen. Schon mit der Ansprache fängt es an: Schreibt man mit Sternchen, Bindestrichen oder Binnengroßbuchstaben oder eben nicht.
+Dann das Thema mit den Geimpften und Ungeimpften – beide Gruppen sehen durch den jeweils anderen die „eigene persönliche Freiheit“ in Gefahr. Autsch.
+Selbst mit dem, was ich einkaufe, setze ich ungewollte Statements, indem ich Plastik vermeide oder nicht,  Fleisch esse oder komplett auf alle tierischen Erzeugnisse verzichte, ob ich ein Auto fahre und wenn dann welches, mit oder ohne Strom. Es gibt so viele Gründe, sich „Anders“ zu fühlen und gerade in dem letzten Jahr hatte ich den Eindruck, dass die Debatten um das jeweils „andere“ sehr viel hitziger geführt wurden, als in den Vorjahren. 
+
+
+              _od#HMM6&*MMMH::-_
+          _dHMMMR??MMM? ""| `"'-?Hb_
+       .~HMMMMMMMMHMMM#M?        `*HMb.
+     ./?HMMMMMMMMMMM"*"""           &MHb.
+    /'|MMMMMMMMMMM'             -   `*MHM\
+   /  |MMMMMMHHM''                   .MMMHb
+  |   9HMMP   .Hq,                   TMMMMMH
+ /     |MM\,H-""&&6\__               `MMMMMMb
+|       `""HH#,       \             - MMMMMMM|
+|           `HoodHMM###.              `9MMMMMH
+|              .MMMMMMMM##\             `*"?HM
+|         ..  ,HMMMMMMMMMMMo\.              |M
+|             |MMMMMMMMMMMMMMMMHo           |M
+|              ?MMMMMMMMMMMMMMMM*           |H
+|.              `#MMMMMMMMMMMMM'           .M|
+ \                `MMMMMMMMMMM*            |P
+ `\                MMMMMMMMT"'            ,H
+  `\              `MMMMMMH?              ./
+    \.            |MMMH#"               ,/
+     `\.          |MMP'               ./'
+       `~\        `HM:.-    .       ,/'
+          "-\_       '_\ .      _.-"
+              "-\-#odMM\_,oo==-"
+    
+
+normal
+             uninvolving = True              neg : pos    =     11.7 : 1.0
+                  avoids = True              pos : neg    =     11.7 : 1.0
+             fascination = True              pos : neg    =     10.3 : 1.0
+              astounding = True              pos : neg    =     10.3 : 1.0
+                 idiotic = True              neg : pos    =      9.8 : 1.0
+    |   n   p |                   |   n   p |    Stemmer more false positive
+    |   e   o |                   |   e   o | 
+    |   g   s |                   |   g   s | 
+----+---------+               ----+---------+ 
+neg |<119>131 |               neg |<110>140 | 
+pos |   5<245>|               pos |   5<245>| 
+----+---------+               ----+---------+ 
+(row = reference; col = test)
+
+unit uPSI_neuraldatasets;
+{
+mindset let mindset set
+
+}
+interface
+ 
+uses
+   SysUtils
+  ,Classes
+  ,uPSComponent
+  ,uPSRuntime
+  ,uPSCompiler
+  ;
+ 
+type 
+(*----------------------------------------------------------------------------*)
+  TPSImport_neuraldatasets = class(TPSPlugin)
+  public
+    procedure CompileImport1(CompExec: TPSScript); override;
+    procedure ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter); override;
+  end;
+ 
+{ compile-time registration functions }
+procedure SIRegister_TClassesAndElements(CL: TPSPascalCompiler);
+procedure SIRegister_TFileNameList(CL: TPSPascalCompiler);
+procedure SIRegister_neuraldatasets(CL: TPSPascalCompiler);
+
+{ run-time registration functions }
+procedure RIRegister_neuraldatasets_Routines(S: TPSExec);
+procedure RIRegister_TClassesAndElements(CL: TPSRuntimeClassImporter);
+procedure RIRegister_TFileNameList(CL: TPSRuntimeClassImporter);
+procedure RIRegister_neuraldatasets(CL: TPSRuntimeClassImporter);
+
+procedure Register;
+
+implementation
+
+uses
+   neuraldatasets, neuralnetworkCAI, neuralvolume , neuralthread ,math  ;
+ 
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_neuraldatasets(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TTinyImageChannel','array [0..31] of array[0..31] of byte; ');
+  CL.AddTypeS('TTinyImageChannel1D','array [0..32 * 32 - 1] of byte; ');
+  CL.AddTypeS('TMNistImage','array [0..27] of array[0..27] of byte; ');
+
+  //TTinyImageChannel1D = packed array [0..32 * 32 - 1] of byte;
+  //TMNistImage = packed array [0..27, 0..27] of byte;
+
+  CL.AddTypeS('TTinyImage', 'record bLabel : byte; R : TTinyImageChannel; G : T'
+   +'TinyImageChannel; B : TTinyImageChannel; end');
+  CL.AddTypeS('TCifar100Image', 'record bCoarseLabel : byte; bFineLabel : byte;'
+   +' R : TTinyImageChannel; G : TTinyImageChannel; B : TTinyImageChannel; end');
+  CL.AddTypeS('TTinySingleChannelImage','record bLabel:byte; Grey: TTinyImageChannel; end');
+  CL.AddTypeS('TTinySingleChannelImage1D','record bLabel:byte;Grey:TTinyImageChannel1D;end');
+//CL.AddTypeS('TTinySingleChannelImagePtr','^TTinySingleChannelImage//will not work');
+//CL.AddTypeS('TTinySingleChannelImage1DPtr','^TTinySingleChannelImage1D//not work');
+  SIRegister_TFileNameList(CL);
+  SIRegister_TClassesAndElements(CL);
+ CL.AddDelphiFunction('Procedure CreateVolumesFromImagesFromFolder(out ImgTrainingVolumes,ImgValidationVolumes,ImgTestVolumes:TNNetVolumeList;FolderName,pImageSubFolder:string;color_encoding:integer;TrainingProp,ValidationProp,TestProp:single;'+ NewSizeX:integer;NewSizeY:integer)');
+ CL.AddDelphiFunction('Procedure CreateFileNameListsFromImagesFromFolder( out TrainingFileNames, ValidationFileNames, TestFileNames : TFileNameList; FolderName, pImageSubFolder : string; TrainingProp, ValidationProp, TestProp : single)');
+ //Procedure LoadImageIntoVolume( M : TFPMemoryImage; Vol : TNNetVolume)');
+ //Procedure LoadVolumeIntoImage( Vol : TNNetVolume; M : TFPMemoryImage)');
+ Function LoadImageFromFileIntoVolume(ImageFileName:string; V:TNNetVolume): boolean');
+ Function SaveImageFromVolumeIntoFile(V:TNNetVolume;ImageFileName:string) : boolean');
+ Procedure ConfusionWriteCSVHeader(var CSVConfusion:TextFile;Labels array of string)');
+ Procedure ConfusionWriteCSV(var CSVConfusion:TextFile;Vol:TNNetVolume;Digits:integer);
+ Procedure LoadTinyImageIntoNNetVolume1( var TI : TTinyImage; Vol : TNNetVolume);');
+ Procedure LoadTinyImageIntoNNetVolume2(var TI: TCifar100Image; Vol : TNNetVolume);');
+ Procedure LoadTinyImageIntoNNetVolume3( var TI : TMNistImage; Vol : TNNetVolume);');
+ Procedure LoadNNetVolumeIntoTinyImage4( Vol : TNNetVolume; var TI : TTinyImage);');
+ Procedure LoadNNetVolumeIntoTinyImage5( Vol:TNNetVolume; var TI : TCifar100Image);');
+ Procedure LoadTinySingleChannelIntoNNetVolume(var SC:TTinySingleChannelImage;Vol:TNNetVolume)');
+ Procedure TinyImageCreateGrey(var TI:TTinyImage;var TIGrey:TTinySingleChannelImage)');
+ Procedure TinyImageHE( var TI, TIHE : TTinySingleChannelImage)');
+ Procedure TinyImageVE( var TI, TIVE : TTinySingleChannelImage)');
+ Procedure TinyImageRemoveZeroGradient(var TI:TTinySingleChannelImage;distance:byte)');
+ Procedure TinyImageHVE( var TI, TIHE : TTinySingleChannelImage)');
+ Function TinyImageTo1D( var TI:TTinySingleChannelImage): TTinySingleChannelImage1D');
+ Procedure CreateCifar10Volumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; color_encoding : byte)');
+ Procedure CreateCifar100Volumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; color_encoding : byte; Verbose : boolean)');
+ Procedure CreateMNISTVolumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; TrainFileName,TestFileName:string;Verbose:boolean;IsFashion:boolean)');
+ Procedure loadCifar10Dataset6(ImgVolumes : TNNetVolumeList; idx : integer; base_pos : integer; color_encoding : byte);');
+ Procedure loadCifar10Dataset7( ImgVolumes : TNNetVolumeList; fileName : string; base_pos : integer; color_encoding : byte);');
+ Procedure loadCifar100Dataset( ImgVolumes : TNNetVolumeList; fileName : string; color_encoding : byte; Verbose : boolean)');
+ Procedure loadMNISTDataset( ImgVolumes : TNNetVolumeList; fileName : string; Verbose : boolean; IsFashion : boolean; MaxLabel : integer);');
+ Function CheckCIFARFile( ) : boolean');
+ Function CheckCIFAR100File( ) : boolean');
+ Function CheckMNISTFile( fileName : string; IsFasion : boolean) : boolean');
+ Procedure TestBatch( NN : TNNet; ImgVolumes : TNNetVolumeList; SampleSize : integer; out Rate, Loss, ErrorSum : TNeuralFloat)');
+ Procedure TranslateCifar10VolumesToMachineAnimal( VolumeList : TNNetVolumeList)');
+ Function SwapEndian( I : integer) : integer');
+end;
+
+VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" Metasploitable2-Linux.vdi -format VDI
+
+C:\Program Files\Oracle\VirtualBox>VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable2-Linux.vdi" --format VDI
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Clone medium created in format 'VDI'. UUID: 7a1bfa8d-cfec-4a20-ae09-e3270bc49108
+C:\Program Files\Oracle\VirtualBox>   
+C:\Program Files\Oracle\VirtualBox>VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" Metasploitable2-Linux.vdi -format VDI
+0%...
+Progress state: VBOX_E_FILE_ERROR
+VBoxManage.exe: error: Failed to clone medium
+VBoxManage.exe: error: Could not create the clone medium 'C:\Program Files\Oracle\VirtualBox\Metasploitable2-Linux.vdi'.
+VBoxManage.exe: error: VDI: cannot create image 'C:\Program Files\Oracle\VirtualBox\Metasploitable2-Linux.vdi' (VERR_ACCESS_DENIED)
+VBoxManage.exe: error: Details: code VBOX_E_FILE_ERROR (0x80bb0004), component MediumWrap, interface IMedium
+VBoxManage.exe: error: Context: "enum RTEXITCODE __cdecl handleCloneMedium(struct HandlerArg *)" at line 1071 of file VBoxManageDisk.cpp
+
+
+ April 26, 2013 at 7:55 pm	
+
+I found no issues using the Metasploitable2-Linux hard disk from the VMware VM in a brand new machine created with VirtualBox. It’s a known feature of VirtualBox its capability to open .vdmk files. So all the conversion steps you described appear to be useless.
+These are the steps I did so far:
+1. downloaded the Metasploitable2-Linux VM
+2. Unzip it somewhere (i.e. C:VMsMetasploitable2-Linux
+3. opened VMware machine configuration file (Metasploitable.vmx, an easy to understand text file) to see what the main configuration details are for the VM
+4. Started VirtualBox (4.2.6)
+5. Created a new VM (Metasploitable2) of type Linux/other Linux
+6. Set the RAM to 512MB (as original VMware machine)
+7. Choose and existing hard drive and point it to file C:VMsMetasploitable2-LinuxMetasploitable.vmdk
+8. Set network card to NAT (as original VMware machine)
+9. Start the VirtualBox machine                                                                     
+10. Enjoy exploiting the vulnerable Linux installation!
+
+ mX4 executed: 10.10.2022 23:05:12  Runtime: 0:0:1.588  Memload: 43% use
+ mX4 executed: 16/12/2022 17:22:25  Runtime: 0:0:1.161  Memload: 41% use
+ mX4 executed: 16/12/2022 17:22:59  Runtime: 0:0:1.83  Memload: 46% use
+ mX4 executed: 01/02/2023 10:56:48  Runtime: 0:0:1.257  Memload: 39% use
+ mX4 executed: 01/02/2023 10:57:22  Runtime: 0:0:1.12  Memload: 39% use
+ mX4 executed: 01/02/2023 10:57:52  Runtime: 0:0:0.971  Memload: 39% use
+ mX4 executed: 01/02/2023 10:58:10  Runtime: 0:0:0.976  Memload: 39% use
+ mX4 executed: 14/04/2023 20:10:44  Runtime: 0:0:3.852  Memload: 51% use 
+    
+    Did also test a script version in maXbox as a combination of bigint and bigfloat.
+    https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+    hash is the same so it works, speed is another story.
+    
+    Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+    Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999
+    
+     Fascinating is the combination of Bigint with Bigfloat in rounding. Did also test a script version in maXbox as a combination of bigint and bigfloat with another precompiled BigX library from Delphi for Science and Delphi for Fun:
+    https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+    hash is the same so it works, speed is another story.
+     Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+    Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999...
+    
+    Fascinating is the combination of Bigint with Bigfloat in rounding. Did also code and test a script version in maXbox as a combination of bigint and bigfloat with another precompiled runtime BigX library from Delphi for Science and Delphi for Fun:
+https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+The  hash of Pi1000 is the same so it works, speed is another story as the script run as interpreter.
+By the way Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999...
+
