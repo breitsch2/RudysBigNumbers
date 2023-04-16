@@ -1,0 +1,540 @@
+program CAI_NEURAL_Crypto_RSA_BIGPI_Tester_Euler; 
+ 
+//https://blogs.embarcadero.com/getting-big-with-pi-in-delphi/
+//https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/TestData/pi-hashes.txt
+//https://delphidigital.io/   
+//https://phi.exchange/   
+//https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/BigPi.pas
+//https://rosettacode.org/wiki/Calculating_the_value_of_e#Delphi
+
+ Const CSHARE = 'https://ipsobildung.sharepoint.com/:u:/s/INFEFZ.1.12345ARJ2208DAST.TB1A/EeMicZKwQwFNlP6GEES4rSwBY5N3ntpw8anAMwPmLefNOg?e=vs9T6c';
+ 
+type TTDigits = Array of Byte; 
+    
+var A : TVectorClass;
+    B : TVectorClass;
+    st: string; f1,f2: Float;               
+    p, q, phi: int64;
+    e, n, privkey, encrypt, decrypt: integer;   
+    abigpi: string;  
+    
+    
+    
+ function DigitsToString(digits: TTDigits): String;
+   begin
+     SetLength(Result, Length(Digits));
+     //itoa(Digits[it]);
+     //writeln(result[2]);
+     for it := 0 to pred(Length(Digits)) do begin
+       Result:= result[it+1]+inttostr(Digits[it]);
+     end;
+     //Result := Result.Insert(1,'.');
+   end; 
+   
+ function Chudnovsky(Places: Integer): string;
+ var lastsum, t, sum: TBigfloat;
+     n, d: TInteger;
+     ana, ada: UInt64;  resstr: string;
+   begin
+     // Use +6 internally for calculations
+     //var internalPrecision := MaxInt;
+     //if Places <= MaxInt - 6 then
+       //internalPrecision := Places + 6;
+      places:= places+2
+     //var lastSum: BigDecimal;
+     t:= TBigFloat.Create1(places);
+     sum := TBigFloat.Create1(places);
+     sum.SetSigDigits(places);
+     t.add1(3);
+     sum.add1(3);
+     //sum.DefaultPrecision := internalPrecision;
+     //sum.DefaultRoundingMode := rmFloor;
+     {var} n:= TInteger.create(1);
+      //n.assignone;
+      d := TInteger.create(0);
+      //d.assignzero;
+     ana:= 0;
+     ada:= 24;
+     //while sum <> lastSum do begin
+     lastsum := TBigFloat.Create1(places);
+     while sum.tostring(normal) <> lastSum.tostring(normal) do begin
+      //writeln('debug1 unequal'+sum.tostring(normal));
+      //writeln('debug2 unequal'+lastsum.tostring(normal));
+       lastSum.assign(sum);
+       //n := n + na;
+       n.add1(ana);
+       ana:= ana + 8;
+       //d := d + da;
+        d.add1(ada);
+       ada:= ada + 32;
+       //t := ((t * n)/d);
+       t.mult2(n);
+       t.divide1(d,places)
+       //sum := (sum + t).RoundToPrecision(internalPrecision);
+       sum.add(t);
+       sum.RoundToPrec1;
+       //sum.RoundToPrec(Places);
+     end;
+     //Result := sum.RoundToPrecision(Places);
+     sum.RoundToPrec(places);  
+     resstr:= sum.tostring(normal)               
+     SetLength(resstr, Length(resstr) - 2);
+     result:= resstr;
+     t.free; n.free; d.free; lastsum.free;
+ end; 
+ 
+ type TBigint = Tinteger; 
+ 
+ function BigEuler(const Digits: Integer): TBigFloat; 
+ //BigDecimal;
+ var lastResult, bigdecone: TBigFloat;  lastFactorial: TBigint;
+     InternalPrecision: integer;
+     iteration: Uint;  tmp: string;
+ begin
+  
+  {var} InternalPrecision:= maxINT;
+  if Digits <= MaxInt - 2 then
+    InternalPrecision:= Digits + 2;
+  result:= TBigFloat.Create1(internalprecision);
+  result.assignone;              
+
+  //Result.DefaultPrecision :=InternalPrecision;
+  {var} lastFactorial := TBigint.create(1);
+  lastResult:= TBigFloat.Create1(digits);
+  lastresult.assignzero;
+  bigdecone:= TBigFloat.Create1(digits);
+  bigdecone.assignone;
+  iteration:= 1;
+  while true do begin
+    lastResult.assign(Result);
+    //lastFactorial := lastFactorial * iteration;
+    lastFactorial.mult1(iteration);
+    //Result:= (Result+BigDecimal.One/lastFactorial).RoundToPrecision(InternalPrecision);
+    //Result:= Result + (1.0 / fact);
+    bigdecone.assignone;
+    bigdecone.divide1(lastfactorial, digits)
+    //writeln(bigdecone.tostring(normal));  
+    Result.add(bigdecone);
+    //Result.RoundToPrec(internalprecision);
+    //Result.RoundToPrec1;
+    if lastResult.tostring(normal) = Result.tostring(normal) then break;
+    inc(Iteration);
+    //writeln(itoa(iteration));
+    Writeln(Format('%d digits took %d iterations',[Digits, iteration]));
+  end;
+  //Writeln(Format('%d digits took %d iterations',[Digits, iteration]));
+  //Result.DefaultRoundingMode := rmFloor;
+  //Result := Result.RoundToPrecision(Digits);
+  Result.RoundToPrec(Digits);
+  //Result.RoundToPrec1;
+  lastResult.free; bigdecone.free; lastFactorial.free;
+end;  
+
+const
+  EPSILON1 = 1.0e-15;
+
+function fAbs(value: Extended): Extended;
+begin
+  Result := value;
+  if value < 0 then
+    Result := -Result;
+end;
+
+function e1: Extended;
+var
+  fact: UInt64;
+  e, e0: Extended;
+  n: Integer;
+begin
+  fact := 1;
+  Result := 2.0;
+  n := 2;
+  repeat
+    e0 := Result;
+    fact := fact * n;
+    inc(n);
+    Result := Result + (1.0 / fact);
+  until (fAbs(Result - e0) < EPSILON1);
+end;  
+
+//https://rosettacode.org/wiki/Calculating_the_value_of_e#Pascal
+
+const
+  EPSILON3 = 1.0e-14;
+
+function Get_E: Extended;
+var
+  recfact: Extended;
+  n: Integer;
+begin
+  recfact := 1.0;
+  Result := 2.0;
+  n := 2;
+  repeat
+    //recfact /= n;
+    recfact:= recfact / n;
+    inc(n);
+    Result := Result + recfact;
+  until (recfact < EPSILON3);
+end;        
+
+
+ begin //@main
+ 
+  A:= TVectorClass.Create([]);
+  B:= TVectorClass.Create([]);
+      TestVectorClassExtended;     
+  A.Free;
+  B.Free;
+  
+  println('{CRYPTO System _________________________}');
+  //1. Select prime numbers p = 17, q = 11
+  p:= 5; q:= 17;
+  
+  //2. Calculate n = pq = 17 x 11 = 187
+  n:= p*q;
+  println('public key: '+itoa(n));               
+                                              
+  //3. Calculate f(n) = (p-1)(q-1) = 16 x 10 = 160
+  phi:= (p-1)*(q-1);
+  println('phi: Þ '+itoa(phi));
+  
+  //4. Select e=7 (public exponent), less than & relative prime to f(n) = 160
+  e:= 3;
+  
+  //5. Determine private key d such that de = 1 mod 160 and d < 160
+  //Func ExpMod(A, Z: Integer; const N: Integer): Integer;');
+  for it:= 1 to 100 do 
+      if (it * e mod phi) = 1 then privkey:= it;
+  println('private key: '+itoa(privkey));
+  
+  //6. Test the private key:  
+  for it:= 1 to 100 do 
+      if ExpMod(it,e, phi) = 1 then println('proof privkey '+itoa(it));
+      
+  //7. Encrypt number 88 with public key: 
+  encrypt:= ExpMod(2, e, n); 
+  writeln('origin numsign: '+'2');
+  writeln('sign to encrypt: '+itoa(encrypt));
+  
+  //8. Decrypt number with private key: 
+  //writeln(bigpow(encrypt, 23));
+  decrypt:= ExpMod(encrypt, privkey, n);
+  writeln('sign to decrypt: '+itoa(decrypt));
+  
+  //9. BigNumber functions
+  //Func RSAEncrypt(aval, apow, amod:Str):Str;;
+  //Func RSADecrypt(aval, apow, amod:Str):Str;; 
+  writeln('big int functions__________________:')
+  writeln(RSAEncrypt('88', itoa(e), itoa(n))); 
+  writeln(RSADecrypt(RSAEncrypt('88',itoa(e),itoa(n)), itoa(privkey),itoa(n))); 
+                               
+  TestKMeans2;
+  //TestTNNetVolume;
+  //LoadPictureIntoVolume
+  
+  writeln(floattostr(SoftmaxDerivative( 0.087879))); 
+  writeln(getparentprocessname2)
+  //Register_PYthonGUI;
+  
+  //InverseCompareResult
+     st := 'a number 12.35 and another 13.415';
+     writeln('Total String parts = '+IntToStr(NumStringParts(st,#32)));
+     f1 := StrToFloatDef(GetStringPart(st,#32,3),0.0);
+     f2 := StrToFloatDef(GetStringPart(st,#32,6),0.0);
+     writeln('Float 1 = '+FloatToStr(F1)+' and Float 2 = '+FloatToStr(F2)); 
+     TestVectorClassExtended;      
+     
+    writeln(itoa(neuralGetProcessId( )));
+    writeln(itoa(GetProcessId( )));
+   //CreatesimpleCNN ;
+  
+   { TrainingPairs := CreateHypotenusePairList(10000);
+    ValidationPairs := CreateHypotenusePairList(1000);
+    TestPairs := CreateHypotenusePairList(1000);   }
+    //procedure TestBackProp();
+    //TestBackProp();
+    //TTestCNNAlgoDoRunHypo;
+    
+    //writeln(botostr(wGetX2(CShare,Exepath+'CRYPTFILE3'+'.pdf'))); 
+    abigpi:= getbigpi;
+    writeln('md5 hash pi1000: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi900: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi800: '+SHA1toHex(synmd5(abigpi)));
+    SetLength(abigpi, Length(abigpi) - 100);
+    writeln('md5 hash pi700: '+SHA1toHex(synmd5(abigpi)));
+    
+    writeln('maxINT: '+itoa(maxINT));
+    //  is a diff in the last dec. - we work on it
+    writeln(Chudnovsky(1000));
+    //writeln('md5 hash pi100: '+SHA1toHex(synmd5(Chudnovsky(1000))));
+    abigpi:= getbigpi;
+    SetLength(abigpi, Length(abigpi) - 0);
+    writeln('md5 hash pi1000: '+SHA1toHex(synmd5(abigpi)));
+    writeln(abigpi);
+    
+    //BigEuler(const Digits: Integer): TBigFloat; 
+    //writeln(BigEuler(30).tostring(scientific)); 
+    //processmessagesOFF;
+     writeln(BigEuler(2000).tostring(normal));  
+     //processmessagesON;          
+     {writeln(format('%.16f ',[1/factorial(5)]));
+     writeln(flots(E));
+     writeln(flots(PI))
+     maxcalcF('ln(E)');
+     maxcalcF('(E)');  }
+     //function e1: Extended;
+     writeln(format('%.15f ',[e1]));
+     writeln(format('calc e = %.15f intern e= %.15f', [Get_E,exp(1.0)]));
+     
+    // Writeln('Þ, Phi, Golden ratio, (1 + v5)/2:');
+  
+End.
+
+ref: https://github.com/TurboPack/RudysBigNumbers/blob/main/Samples/Pi/TestData/pi-hashes.txt
+
+10 digits took 15 iterations
+100 digits took 71 iterations
+1000 digits took 451 iterations
+2000 digits took 809 iterations
+
+100 digits took 71 iterations
+2.718281828459045235360287471352662497757247093699959574966967627724076630353547594571382178525166427
+2.718281828459045235360287471352662497757247093699959574966967627724076630353547594571382178525166427
+2.718281828459045 
+calc e = 2.718281828459045 intern e= 2.718281828459045
+ mX4 executed: 16/04/2023 15:40:17  Runtime: 0:0:2.593  Memload: 49% use
+
+Doc: What do mathematicians think of Von Neumann?
+
+Jacob Bronowski once told an anecdote about von Neumann.
+
+They had disagreed about some problem and Bronowski realised overnight that von Neumann was right. In the morning, Bronowski telephoned von Neumann to tell him this. Von Neumann apparently replied "You woke me up to tell me that I was right? Please wait until I am wrong."
+Bertrand Russell said that von Neumann would often have the solution to a problem before Russell had even understood the question. (Edit: Russell may not have been referring to von Neumann. Did they know each other?)
+
+Here's something few people realize:
+Politicians don't follow money.  Money follows politicians.
+If you don't think this is true, ask yourself why the Pro-gun Lobby gives zero money to Nancy Pelosi. Or why the Abortion Lobby give zero money to Ted Cruz.
+
+
+Ref:  Starting Validation.
+VALIDATION RECORD! Saving NN at DenseNetBCL40_2.nn
+Debug SavetokenStructureToString: 
+Debug structuretostring: -1)TNNetInput:32;32;3;0;0;0;0;0#0)TNNetConvolutionLinear:4;3;1;1;1;0;0;0#1)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#2)TNNetChannelMul:0;0;0;0;0;0;0;0#3)TNNetChannelBias:0;0;0;0;0;0;0;0#4)TNNetSELU:0;0;0;0;0;0;0;0#5)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#6)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#7)TNNetChannelMul:0;0;0;0;0;0;0;0#8)TNNetChannelBias:0;0;0;0;0;0;0;0#9)TNNetSELU:0;0;0;0;0;0;0;0#10)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#11)TNNetDropout:5;1;0;0;0;0;0;0#12)TNNetDeepConcat:0;0;0;0;0;0;0;0:1;12#13)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#14)TNNetChannelMul:0;0;0;0;0;0;0;0#15)TNNetChannelBias:0;0;0;0;0;0;0;0#16)TNNetSELU:0;0;0;0;0;0;0;0#17)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#18)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#19)TNNetChannelMul:0;0;0;0;0;0;0;0#20)TNNetChannelBias:0;0;0;0;0;0;0;0#21)TNNetSELU:0;0;0;0;0;0;0;0#22)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#23)TNNetDropout:5;1;0;0;0;0;0;0#24)TNNetDeepConcat:0;0;0;0;0;0;0;0:13;24#25)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#26)TNNetChannelMul:0;0;0;0;0;0;0;0#27)TNNetChannelBias:0;0;0;0;0;0;0;0#28)TNNetSELU:0;0;0;0;0;0;0;0#29)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#30)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#31)TNNetChannelMul:0;0;0;0;0;0;0;0#32)TNNetChannelBias:0;0;0;0;0;0;0;0#33)TNNetSELU:0;0;0;0;0;0;0;0#34)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#35)TNNetDropout:5;1;0;0;0;0;0;0#36)TNNetDeepConcat:0;0;0;0;0;0;0;0:25;36#37)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#38)TNNetChannelMul:0;0;0;0;0;0;0;0#39)TNNetChannelBias:0;0;0;0;0;0;0;0#40)TNNetSELU:0;0;0;0;0;0;0;0#41)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#42)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#43)TNNetChannelMul:0;0;0;0;0;0;0;0#44)TNNetChannelBias:0;0;0;0;0;0;0;0#45)TNNetSELU:0;0;0;0;0;0;0;0#46)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#47)TNNetDropout:5;1;0;0;0;0;0;0#48)TNNetDeepConcat:0;0;0;0;0;0;0;0:37;48#49)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#50)TNNetChannelMul:0;0;0;0;0;0;0;0#51)TNNetChannelBias:0;0;0;0;0;0;0;0#52)TNNetSELU:0;0;0;0;0;0;0;0#53)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#54)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#55)TNNetChannelMul:0;0;0;0;0;0;0;0#56)TNNetChannelBias:0;0;0;0;0;0;0;0#57)TNNetSELU:0;0;0;0;0;0;0;0#58)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#59)TNNetDropout:5;1;0;0;0;0;0;0#60)TNNetDeepConcat:0;0;0;0;0;0;0;0:49;60#61)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#62)TNNetChannelMul:0;0;0;0;0;0;0;0#63)TNNetChannelBias:0;0;0;0;0;0;0;0#64)TNNetSELU:0;0;0;0;0;0;0;0#65)TNNetPointwiseConvLinear:4;1;0;1;0;0;0;0#66)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#67)TNNetChannelMul:0;0;0;0;0;0;0;0#68)TNNetChannelBias:0;0;0;0;0;0;0;0#69)TNNetSELU:0;0;0;0;0;0;0;0#70)TNNetConvolutionLinear:12;3;1;1;0;0;0;0#71)TNNetDropout:5;1;0;0;0;0;0;0#72)TNNetDeepConcat:0;0;0;0;0;0;0;0:61;72#73)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#74)TNNetChannelMul:0;0;0;0;0;0;0;0#75)TNNetChannelBias:0;0;0;0;0;0;0;0#76)TNNetSELU:0;0;0;0;0;0;0;0#77)TNNetPointwiseConvLinear:38;1;0;1;1;0;0;0#78)TNNetMaxPool:2;2;0;0;0;0;0;0#79)TNNetMovingStdNormalization:0;0;0;0;0;0;0;0#80)TNNetChannelMul:0;0;0;0;0;0;0;0#81)TNNetChannelBias:0;0;0;0;0;0;0;0#82)TNNetSELU:0;0;0;0;0;0;0;0#83)TNNetMaxChannel:2;2;0;0;0;0;0;0#84)TNNetFullConnectLinear:10;1;1;0;0;0;0;0#85)TNNetSoftMax:0;0;0;0;0;0;0;0
+Epochs: 10 Examples seen:400000 Validation Accuracy: 0.4925 Validation Error: 1.3194 Validation Loss: 1.4684 Total time: 1082.28min
+Image mX4 FThreadNN[0].DebugWeights(); skipped...
+Starting Testing.
+Epochs: 10 Examples seen:400000 Test Accuracy: 0.5010 Test Error: 1.3102 Test Loss: 1.4532 Total time: 1097.69min
+Epoch time: 28.0000 minutes. 10 epochs: 4.7000 hours.
+Epochs: 10. Working time: 18.29 hours.
+CAI maXbox Neural Fit Finished.
+ mX4 executed: 26/12/2021 14:36:36  Runtime: 5:42:1.831  Memload: 34% use
+
+Liebe Kundinnen und Kunden,
+ 
+dieses Jahr neigt sich dem Ende zu und ich finde dieses zweite Corona-Jahr war alles in allem anstrengend.
+Es gibt und gab so viele Diskussionen um streitbare Themen. Schon mit der Ansprache fängt es an: Schreibt man mit Sternchen, Bindestrichen oder Binnengroßbuchstaben oder eben nicht.
+Dann das Thema mit den Geimpften und Ungeimpften – beide Gruppen sehen durch den jeweils anderen die „eigene persönliche Freiheit“ in Gefahr. Autsch.
+Selbst mit dem, was ich einkaufe, setze ich ungewollte Statements, indem ich Plastik vermeide oder nicht,  Fleisch esse oder komplett auf alle tierischen Erzeugnisse verzichte, ob ich ein Auto fahre und wenn dann welches, mit oder ohne Strom. Es gibt so viele Gründe, sich „Anders“ zu fühlen und gerade in dem letzten Jahr hatte ich den Eindruck, dass die Debatten um das jeweils „andere“ sehr viel hitziger geführt wurden, als in den Vorjahren. 
+
+
+              _od#HMM6&*MMMH::-_
+          _dHMMMR??MMM? ""| `"'-?Hb_
+       .~HMMMMMMMMHMMM#M?        `*HMb.
+     ./?HMMMMMMMMMMM"*"""           &MHb.
+    /'|MMMMMMMMMMM'             -   `*MHM\
+   /  |MMMMMMHHM''                   .MMMHb
+  |   9HMMP   .Hq,                   TMMMMMH
+ /     |MM\,H-""&&6\__               `MMMMMMb
+|       `""HH#,       \             - MMMMMMM|
+|           `HoodHMM###.              `9MMMMMH
+|              .MMMMMMMM##\             `*"?HM
+|         ..  ,HMMMMMMMMMMMo\.              |M
+|             |MMMMMMMMMMMMMMMMHo           |M
+|              ?MMMMMMMMMMMMMMMM*           |H
+|.              `#MMMMMMMMMMMMM'           .M|
+ \                `MMMMMMMMMMM*            |P
+ `\                MMMMMMMMT"'            ,H
+  `\              `MMMMMMH?              ./
+    \.            |MMMH#"               ,/
+     `\.          |MMP'               ./'
+       `~\        `HM:.-    .       ,/'
+          "-\_       '_\ .      _.-"
+              "-\-#odMM\_,oo==-"
+    
+
+normal
+             uninvolving = True              neg : pos    =     11.7 : 1.0
+                  avoids = True              pos : neg    =     11.7 : 1.0
+             fascination = True              pos : neg    =     10.3 : 1.0
+              astounding = True              pos : neg    =     10.3 : 1.0
+                 idiotic = True              neg : pos    =      9.8 : 1.0
+    |   n   p |                   |   n   p |    Stemmer more false positive
+    |   e   o |                   |   e   o | 
+    |   g   s |                   |   g   s | 
+----+---------+               ----+---------+ 
+neg |<119>131 |               neg |<110>140 | 
+pos |   5<245>|               pos |   5<245>| 
+----+---------+               ----+---------+ 
+(row = reference; col = test)
+
+unit uPSI_neuraldatasets;
+{
+mindset let mindset set
+
+}
+interface
+ 
+uses
+   SysUtils
+  ,Classes
+  ,uPSComponent
+  ,uPSRuntime
+  ,uPSCompiler
+  ;
+ 
+type 
+(*----------------------------------------------------------------------------*)
+  TPSImport_neuraldatasets = class(TPSPlugin)
+  public
+    procedure CompileImport1(CompExec: TPSScript); override;
+    procedure ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter); override;
+  end;
+ 
+{ compile-time registration functions }
+procedure SIRegister_TClassesAndElements(CL: TPSPascalCompiler);
+procedure SIRegister_TFileNameList(CL: TPSPascalCompiler);
+procedure SIRegister_neuraldatasets(CL: TPSPascalCompiler);
+
+{ run-time registration functions }
+procedure RIRegister_neuraldatasets_Routines(S: TPSExec);
+procedure RIRegister_TClassesAndElements(CL: TPSRuntimeClassImporter);
+procedure RIRegister_TFileNameList(CL: TPSRuntimeClassImporter);
+procedure RIRegister_neuraldatasets(CL: TPSRuntimeClassImporter);
+
+procedure Register;
+
+implementation
+
+uses
+   neuraldatasets, neuralnetworkCAI, neuralvolume , neuralthread ,math  ;
+ 
+(*----------------------------------------------------------------------------*)
+procedure SIRegister_neuraldatasets(CL: TPSPascalCompiler);
+begin
+  CL.AddTypeS('TTinyImageChannel','array [0..31] of array[0..31] of byte; ');
+  CL.AddTypeS('TTinyImageChannel1D','array [0..32 * 32 - 1] of byte; ');
+  CL.AddTypeS('TMNistImage','array [0..27] of array[0..27] of byte; ');
+
+  //TTinyImageChannel1D = packed array [0..32 * 32 - 1] of byte;
+  //TMNistImage = packed array [0..27, 0..27] of byte;
+
+  CL.AddTypeS('TTinyImage', 'record bLabel : byte; R : TTinyImageChannel; G : T'
+   +'TinyImageChannel; B : TTinyImageChannel; end');
+  CL.AddTypeS('TCifar100Image', 'record bCoarseLabel : byte; bFineLabel : byte;'
+   +' R : TTinyImageChannel; G : TTinyImageChannel; B : TTinyImageChannel; end');
+  CL.AddTypeS('TTinySingleChannelImage','record bLabel:byte; Grey: TTinyImageChannel; end');
+  CL.AddTypeS('TTinySingleChannelImage1D','record bLabel:byte;Grey:TTinyImageChannel1D;end');
+//CL.AddTypeS('TTinySingleChannelImagePtr','^TTinySingleChannelImage//will not work');
+//CL.AddTypeS('TTinySingleChannelImage1DPtr','^TTinySingleChannelImage1D//not work');
+  SIRegister_TFileNameList(CL);
+  SIRegister_TClassesAndElements(CL);
+ CL.AddDelphiFunction('Procedure CreateVolumesFromImagesFromFolder(out ImgTrainingVolumes,ImgValidationVolumes,ImgTestVolumes:TNNetVolumeList;FolderName,pImageSubFolder:string;color_encoding:integer;TrainingProp,ValidationProp,TestProp:single;'+ NewSizeX:integer;NewSizeY:integer)');
+ CL.AddDelphiFunction('Procedure CreateFileNameListsFromImagesFromFolder( out TrainingFileNames, ValidationFileNames, TestFileNames : TFileNameList; FolderName, pImageSubFolder : string; TrainingProp, ValidationProp, TestProp : single)');
+ //Procedure LoadImageIntoVolume( M : TFPMemoryImage; Vol : TNNetVolume)');
+ //Procedure LoadVolumeIntoImage( Vol : TNNetVolume; M : TFPMemoryImage)');
+ Function LoadImageFromFileIntoVolume(ImageFileName:string; V:TNNetVolume): boolean');
+ Function SaveImageFromVolumeIntoFile(V:TNNetVolume;ImageFileName:string) : boolean');
+ Procedure ConfusionWriteCSVHeader(var CSVConfusion:TextFile;Labels array of string)');
+ Procedure ConfusionWriteCSV(var CSVConfusion:TextFile;Vol:TNNetVolume;Digits:integer);
+ Procedure LoadTinyImageIntoNNetVolume1( var TI : TTinyImage; Vol : TNNetVolume);');
+ Procedure LoadTinyImageIntoNNetVolume2(var TI: TCifar100Image; Vol : TNNetVolume);');
+ Procedure LoadTinyImageIntoNNetVolume3( var TI : TMNistImage; Vol : TNNetVolume);');
+ Procedure LoadNNetVolumeIntoTinyImage4( Vol : TNNetVolume; var TI : TTinyImage);');
+ Procedure LoadNNetVolumeIntoTinyImage5( Vol:TNNetVolume; var TI : TCifar100Image);');
+ Procedure LoadTinySingleChannelIntoNNetVolume(var SC:TTinySingleChannelImage;Vol:TNNetVolume)');
+ Procedure TinyImageCreateGrey(var TI:TTinyImage;var TIGrey:TTinySingleChannelImage)');
+ Procedure TinyImageHE( var TI, TIHE : TTinySingleChannelImage)');
+ Procedure TinyImageVE( var TI, TIVE : TTinySingleChannelImage)');
+ Procedure TinyImageRemoveZeroGradient(var TI:TTinySingleChannelImage;distance:byte)');
+ Procedure TinyImageHVE( var TI, TIHE : TTinySingleChannelImage)');
+ Function TinyImageTo1D( var TI:TTinySingleChannelImage): TTinySingleChannelImage1D');
+ Procedure CreateCifar10Volumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; color_encoding : byte)');
+ Procedure CreateCifar100Volumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; color_encoding : byte; Verbose : boolean)');
+ Procedure CreateMNISTVolumes( out ImgTrainingVolumes, ImgValidationVolumes, ImgTestVolumes : TNNetVolumeList; TrainFileName,TestFileName:string;Verbose:boolean;IsFashion:boolean)');
+ Procedure loadCifar10Dataset6(ImgVolumes : TNNetVolumeList; idx : integer; base_pos : integer; color_encoding : byte);');
+ Procedure loadCifar10Dataset7( ImgVolumes : TNNetVolumeList; fileName : string; base_pos : integer; color_encoding : byte);');
+ Procedure loadCifar100Dataset( ImgVolumes : TNNetVolumeList; fileName : string; color_encoding : byte; Verbose : boolean)');
+ Procedure loadMNISTDataset( ImgVolumes : TNNetVolumeList; fileName : string; Verbose : boolean; IsFashion : boolean; MaxLabel : integer);');
+ Function CheckCIFARFile( ) : boolean');
+ Function CheckCIFAR100File( ) : boolean');
+ Function CheckMNISTFile( fileName : string; IsFasion : boolean) : boolean');
+ Procedure TestBatch( NN : TNNet; ImgVolumes : TNNetVolumeList; SampleSize : integer; out Rate, Loss, ErrorSum : TNeuralFloat)');
+ Procedure TranslateCifar10VolumesToMachineAnimal( VolumeList : TNNetVolumeList)');
+ Function SwapEndian( I : integer) : integer');
+end;
+
+VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" Metasploitable2-Linux.vdi -format VDI
+
+C:\Program Files\Oracle\VirtualBox>VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable2-Linux.vdi" --format VDI
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Clone medium created in format 'VDI'. UUID: 7a1bfa8d-cfec-4a20-ae09-e3270bc49108
+C:\Program Files\Oracle\VirtualBox>   
+C:\Program Files\Oracle\VirtualBox>VBoxManage clonehd "C:\Program Files\Streaming\IBZ2021\IFA2022\metasploitable-linux-2.0.0\Metasploitable2-Linux\Metasploitable.vmdk" Metasploitable2-Linux.vdi -format VDI
+0%...
+Progress state: VBOX_E_FILE_ERROR
+VBoxManage.exe: error: Failed to clone medium
+VBoxManage.exe: error: Could not create the clone medium 'C:\Program Files\Oracle\VirtualBox\Metasploitable2-Linux.vdi'.
+VBoxManage.exe: error: VDI: cannot create image 'C:\Program Files\Oracle\VirtualBox\Metasploitable2-Linux.vdi' (VERR_ACCESS_DENIED)
+VBoxManage.exe: error: Details: code VBOX_E_FILE_ERROR (0x80bb0004), component MediumWrap, interface IMedium
+VBoxManage.exe: error: Context: "enum RTEXITCODE __cdecl handleCloneMedium(struct HandlerArg *)" at line 1071 of file VBoxManageDisk.cpp
+
+
+ April 26, 2013 at 7:55 pm	
+
+I found no issues using the Metasploitable2-Linux hard disk from the VMware VM in a brand new machine created with VirtualBox. It’s a known feature of VirtualBox its capability to open .vdmk files. So all the conversion steps you described appear to be useless.
+These are the steps I did so far:
+1. downloaded the Metasploitable2-Linux VM
+2. Unzip it somewhere (i.e. C:VMsMetasploitable2-Linux
+3. opened VMware machine configuration file (Metasploitable.vmx, an easy to understand text file) to see what the main configuration details are for the VM
+4. Started VirtualBox (4.2.6)
+5. Created a new VM (Metasploitable2) of type Linux/other Linux
+6. Set the RAM to 512MB (as original VMware machine)
+7. Choose and existing hard drive and point it to file C:VMsMetasploitable2-LinuxMetasploitable.vmdk
+8. Set network card to NAT (as original VMware machine)
+9. Start the VirtualBox machine                                                                     
+10. Enjoy exploiting the vulnerable Linux installation!
+
+ mX4 executed: 10.10.2022 23:05:12  Runtime: 0:0:1.588  Memload: 43% use
+ mX4 executed: 16/12/2022 17:22:25  Runtime: 0:0:1.161  Memload: 41% use
+ mX4 executed: 16/12/2022 17:22:59  Runtime: 0:0:1.83  Memload: 46% use
+ mX4 executed: 01/02/2023 10:56:48  Runtime: 0:0:1.257  Memload: 39% use
+ mX4 executed: 01/02/2023 10:57:22  Runtime: 0:0:1.12  Memload: 39% use
+ mX4 executed: 01/02/2023 10:57:52  Runtime: 0:0:0.971  Memload: 39% use
+ mX4 executed: 01/02/2023 10:58:10  Runtime: 0:0:0.976  Memload: 39% use
+ mX4 executed: 14/04/2023 20:10:44  Runtime: 0:0:3.852  Memload: 51% use 
+    
+    Did also test a script version in maXbox as a combination of bigint and bigfloat.
+    https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+    hash is the same so it works, speed is another story.
+    
+    Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+    Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999
+    
+     Fascinating is the combination of Bigint with Bigfloat in rounding. Did also test a script version in maXbox as a combination of bigint and bigfloat with another precompiled BigX library from Delphi for Science and Delphi for Fun:
+    https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+    hash is the same so it works, speed is another story.
+     Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+    Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999...
+    
+    Fascinating is the combination of Bigint with Bigfloat in rounding. Did also code and test a script version in maXbox as a combination of bigint and bigfloat with another precompiled runtime BigX library from Delphi for Science and Delphi for Fun:
+https://github.com/breitsch2/RudysBigNumbers/blob/main/Samples/Pi/1207_cryptosystem2test_bigpi1.txt  
+The  hash of Pi1000 is the same so it works, speed is another story as the script run as interpreter.
+By the way Pi is an irrational number, and its sequence is as we know infinite and non-repeating. 
+Feynman thought that if he could memorize Pi up to the 762nd decimal place, he could trick people into thinking it was rational and say “999999...
+Euler 10k:
+2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174135966290435729003342952605956307381323286279434907632338298807531952510190115738341879307021540891499348841675092447614606680822648001684774118537423454424371075390777449920695517027618386062613313845830007520449338265602976067371132007093287091274437470472306969772093101416928368190255151086574637721112523897844250569536967707854499699679468644549059879316368892300987931277361782154249992295763514822082698951936680331825288693984964651058209392398294887933203625094431173012381970684161403970198376793206832823764648042953118023287825098194558153017567173613320698112509961818815930416903515988885193458072738667385894228792284998920868058257492796104841984443634632449684875602336248270419786232090021609902353043699418491463140934317381436405462531520961836908887070167683964243781405927145635490613031072085103837505101157477041718986106873969655212671546889570350354021234078498193343210681701210056278802351930332247450158539047304199577770935036604169973297250886876966403555707162268447162560798826517871341951246652010305921236677194325278675398558944896970964097545918569563802363701621120477427228364896134225164450781824423529486363721417402388934412479635743702637552944483379980161254922785092577825620926226483262779333865664816277251640191059004916449982893150566047258027786318641551956532442586982946959308019152987211725563475463964479101459040905862984967912874068705048958586717479854667757573205681288459205413340539220001137863009455606881667400169842055804033637953764520304024322566135278369511778838638744396625322498506549958862342818997077332761717839280349465014345588970719425863987727547109629537415211151368350627526023264847287039207643100595841166120545297030236472549296669381151373227536450988890313602057248176585118063036442812314965507047510254465011727211555194866850800368532281831521960037356252794495158284188294787610852639813955990067376482922443752871846245780361929819713991475644882626039033814418232625150974827987779964373089970388867782271383605772978824125611907176639465070633045279546618550966661856647097113444740160704626215680717481877844371436988218559670959102596862002353718588748569652200050311734392073211390803293634479727355955277349071783793421637012050054513263835440001863239914907054797780566978533580489669062951194324730995876552368128590413832411607226029983305353708761389396391779574540161372236187893652605381558415871869255386061647798340254351284396129460352913325942794904337299085731580290958631382683291477116396337092400316894586360606458459251269946557248391865642097526850823075442545993769170419777800853627309417101634349076964237222943523661255725088147792231519747780605696725380171807763603462459278778465850656050780844211529697521890874019660906651803516501792504619501366585436632712549639908549144200014574760819302212066024330096412704894390397177195180699086998606636583232278709376502260149291011517177635944602023249300280401867723910288097866605651183260043688508817157238669842242201024950551881694803221002515426494639812873677658927688163598312477886520141174110913601164995076629077943646005851941998560162647907615321038727557126992518275687989302761761146162549356495903798045838182323368612016243736569846703785853305275833337939907521660692380533698879565137285593883499894707416181550125397064648171946708348197214488898790676503795903669672494992545279033729636162658976039498576741397359441023744329709355477982629614591442936451428617158587339746791897571211956187385783644758448423555581050025611492391518893099463428413936080383091662818811503715284967059741625628236092168075150177725387402564253470879089137291722828611515915683725241630772254406337875931059826760944203261924285317018781772960235413060672136046000389661093647095141417185777014180606443636815464440053316087783143174440811949422975599314011888683314832802706553833004693290115744147563139997221703804617092894579096271662260740718749975359212756084414737823303270330168237193648002173285734935947564334129943024850235732214597843282641421684878721673367010615094243456984401873312810107945127223737886126058165668053714396127888732527373890392890506865324138062796025930387727697783792868409325365880733988457218746021005311483351323850047827169376218004904795597959290591655470505777514308175112698985188408718564026035305583737832422924185625644255022672155980274012617971928047139600689163828665277009752767069777036439260224372841840883251848770472638440379530166905465937461619323840363893131364327137688841026811219891275223056256756254701725086349765367288605966752740868627407912856576996313789753034660616669804218267724560530660773899624218340859882071864682623215080288286359746839654358856685503773131296587975810501214916207656769950659715344763470320853215603674828608378656803073062657633469774295634643716709397193060876963495328846833613038829431040800296873869117066666146800015121143442256023874474325250769387077775193299942137277211258843608715834835626961661980572526612206797540621062080649882918454395301529982092503005498257043390553570168653120526495614857249257386206917403695213533732531666345466588597286659451136441370331393672118569553952108458407244323835586063106806964924851232632699514603596037297253198368423363904632136710116192821711150282801604488058802382031981493096369596735832742024988245684941273860566491352526706046234450549227581151709314921879592718001940968866986837037302200475314338181092708030017205935530520700706072233999463990571311587099635777359027196285061146514837526209565346713290025994397663114545902685898979115837093419370441155121920117164880566945938131183843765620627846310490346293950029458341164824114969758326011800731699437393506966295712410273239138741754923071862454543222039552735295240245903805744502892246886285336542213815722131163288112052146489805180092024719391710555390113943316681515828843687606961102505171007392762385553386272553538830960671644662370922646809671254061869502143176211668140097595281493907222601112681153108387317617323235263605838173151034595736538223534992935822836851007810884634349983518404451704270189381994243410090575376257767571118090088164183319201962623416288166521374717325477727783488774366518828752156685719506371936565390389449366421764003121527870222366463635755503565576948886549500270853923617105502131147413744106134445544192101336172996285694899193369184729478580729156088510396781959429833186480756083679551496636448965592948187851784038773326247051945050419847742014183947731202815886845707290544057510601285258056594703046836344592652552137008068752009593453607316226118728173928074623094685367823106097921599360019946237993434210687813497346959246469752506246958616909178573976595199392993995567542714654910456860702099012606818704984178079173924071945996323060254707901774527513186809982284730860766536866855516467702911336827563107223346726113705490795365834538637196235856312618387156774118738527722922594743373785695538456246801013905727871016512966636764451872465653730402443684140814488732957847348490003019477888020460324660842875351848364959195082888323206522128104190448047247949291342284951970022601310430062410717971502793433263407995960531446053230488528972917659876016667811937932372453857209607582277178483361613582612896226118129455927462767137794487586753657544861407611931125958512655759734573015333642630767985443385761715333462325270572005303988289499034259566232975782488735029259166825894456894655992658454762694528780516501720674785417887982276806536650641910973434528878338621726156269582654478205672987756426325321594294418039943217000090542650763095588465895171709147607437136893319469090981904501290307099566226620303182649365733698419555776963787624918852865686607600566025605445711337286840205574416030837052312242587223438854123179481388550075689381124935386318635287083799845692619981794523364087429591180747453419551420351726184200845509170845682368200897739455842679214273477560879644279202708312150156406341341617166448069815483764491573900121217041547872591998943825364950514771379399147205219529079396137621107238494290616357604596231253506068537651423115349665683715116604220796394466621163255157729070978473156278277598788136491951257483328793771571459091064841642678309949723674420175862269402159407924480541255360431317992696739157542419296607312393763542139230617876753958711436104089409966089471418340698362993675362621545247298464213752891079884381306095552622720837518629837066787224430195793793786072107254277289071732854874374355781966511716618330881129120245204048682200072344035025448202834254187884653602591506445271657700044521097735585897622655484941621714989532383421600114062950718490427789258552743035221396835679018076406042138307308774460170842688272261177180842664333651780002171903449234264266292261456004337383868335555343453004264818473989215627086095650629340405264943244261445665921291225648893569655009154306426134252668472594914314239398845432486327461842846655985332312210466259890141712103446084271616619001257195870793217569698544013397622096749454185407118446433946990162698351607848924514058940946395267807354579700307051163682519487701189764002827648414160587206184185297189154019688253289309149665345753571427318482016384644832499037886069008072709327673127581966563941148961716832980455139729506687604740915420428429993541025829113502241690769431668574242522509026939034814856451303069925199590436384028429267412573422447765584177886171737265462085498294498946787350929581652632072258992368768457017823038096567883112289305809140572610865884845873101658151167533327674887014829167419701512559782572707406431808601428149024146780472327597684269633935773542930186739439716388611764209004068663398856841681003872389214483176070116684503887212364367043314091155733280182977988736590916659612402021778558854876176161989370794380056663364884365089144805571039765214696027662583599051987042300179465536792.7182818284590452353602874713526624977572470936999595749669676277605063554384342501868158462428054649716930261178783223999768129192855081284904906928430462871412187218239181722328134807766956341568277524406140640125226277132875403948980003593121043986376163715395484795713130954278964025429858119758241273870817197509312295219482645617706374343558983684014888277739382601857832957525953885578192474299704219536303453576228231865713864083063107942846459392433767107757031972952220565628691253661074808594961805511556454218343769699716685806461138484697715172746941718774073248882217698099000082220668395961676389347620699206322744339852589431340731959195945254193171832790556710361578878565175064950652611406410637880489736358277628743459937819290080580430948528947100455215277144640595784509595428413002889922531066595752341691097438198101458306585911109533300508195486772502558115469792512365186788312481693523413127807902114965758382679860646988976898217861796139415061902567025316380643284978337912451282018780030309727317562559007061673000151690001479857000029942000279386000005329000000098000000855000000014000000124000000002000000016
+
+
